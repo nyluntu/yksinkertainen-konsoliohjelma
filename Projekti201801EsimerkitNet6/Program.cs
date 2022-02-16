@@ -1,7 +1,17 @@
 ﻿// Ohjelman pääluokka, ns. pääohjelma, josta kaikki toiminnallisuus
 // alkaa.
+using Microsoft.Extensions.Configuration;
 using Projekti201801EsimerkitNet6;
 
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile("OhjelmanAsetukset.json")
+    .AddEnvironmentVariables()
+    .Build();
+
+OhjelmanAsetukset munAsetukset = config.GetRequiredSection("MunAsetukset").Get<OhjelmanAsetukset>();
+
+Console.WriteLine(munAsetukset.TiedostoPolku);
+Console.WriteLine(munAsetukset.Asetus1);
 
 // Varsinaisen ohjelman suoritus alkaa.
 
@@ -10,9 +20,9 @@ Lukija lukija = new Lukija();
 CsvTiedosto csv = new CsvTiedosto();
 
 
-const string tallennusSijainti = @"C:\\Temp\";
-const string tiedostopolkuTuotelista = tallennusSijainti + "tuotelista.csv";
-const string tiedostopolkuTilaus = tallennusSijainti + "tilaus.csv";
+string tallennusSijainti = munAsetukset.TiedostoPolku;
+string tiedostopolkuTuotelista = tallennusSijainti + "tuotelista.csv";
+string tiedostopolkuTilaus = tallennusSijainti + "tilaus.csv";
 
 List<Tuote> tuotelista = csv.LueTuotteetTiedostosta(tiedostopolkuTuotelista);
 
